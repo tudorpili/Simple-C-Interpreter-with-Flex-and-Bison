@@ -1,0 +1,15 @@
+int a1;
+double a2;
+float a3;
+a1=23;
+a2=3.33;
+a3=3.22f;
+if(a1>0)
+{
+    a1=22;
+}else
+{
+    a1=21;
+}
+printf("%d",a1);
+printf("Hai salut\n");

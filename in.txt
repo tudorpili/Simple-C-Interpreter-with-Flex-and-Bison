@@ -1,0 +1,9 @@
+var a1;
+var a2;
+var a3;
+a1=3+45-(12+3);
+a2=234;
+a3=1+23-12;
+print a1;
+print a2;
+print a3;
