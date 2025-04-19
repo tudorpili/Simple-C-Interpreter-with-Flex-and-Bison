@@ -2,6 +2,11 @@
 %{
     #include"enum.h"
     #include "parser.tab.h"
+    #include<limits.h>
+    #include<stdio.h>
+    #include<stdlib.h>
+    #include<float.h>
+    #include<math.h>
     //#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
     //#include<string.h>
     int lineNo = 1;
@@ -17,6 +22,14 @@
 "float"         {colNo+=5; return TOK_FLOAT; }
 
 "double"        {colNo+=6; return TOK_DOUBLE; }
+
+"(int)"         {colNo+=5; return TOK_CAST_INT; }
+
+"(float)"       {colNo+=7; return TOK_CAST_FLOAT; }
+
+"(double)"      {colNo+=8; return TOK_CAST_DOUBLE; }
+
+"return"        {colNo+=6; return TOK_RETURN; }
 
 "if"            { colNo+=2; return TOK_IF; }
 
@@ -62,23 +75,61 @@
 
 "!="            { colNo+=2; return TOK_NE; }
 
-"&"             { colNo++; return '&'; }
+"||"            { colNo+=2; return TOK_OR; }
+
+"&&"            { colNo+=2; return TOK_AND; }
+
+"&"             { colNo++; return TOK_AMPERSAND; }
+
+
+
+"//"[^\n]*      { /* Single line comment */ colNo+=strlen(yytext); }
+
+"/*"([^*]|\*+[^*/])*\*+"/" { /* Multi-line comment */
+                            for(int i=0; i<strlen(yytext); i++) {
+                                if(yytext[i] == '\n') {
+                                    lineNo++;
+                                    colNo=1;
+                                }else {
+                                    colNo++;
+                                }
+                            }
+                        }
 
 
 0|[1-9][0-9]*       { yylloc.first_line = lineNo; yylloc.first_column = colNo;
                     colNo+=strlen(yytext);
-                    yylval.intVal = atoi(yytext);
-                    return TOK_NUMBER_INT; }
+                    long long value=atoll(yytext);
+                    if (value > INT_MAX || value < INT_MIN) {
+                        fprintf(stderr, "%d:%d Eroare lexica: Valoarea numerica %s depaseste limitele int!\n", lineNo, colNo, yytext);
+                        exit(EXIT_FAILURE);
+                        //return TOK_ERROR;  // Signal a lexical error and stop parsing
+                    } else {
+                        yylval.intVal = atoi(yytext);  // Safe to assign after range check
+                        return TOK_NUMBER_INT;
+                    }        
+}
 
 [0-9]+\.[0-9]+f? { yylloc.first_line = lineNo;
                     yylloc.first_column = colNo;
                     colNo+=strlen(yytext);
-                    if(yytext[strlen(yytext)-1] == 'f') {
-                        yylval.floatVal = atof(yytext);
-                        return TOK_NUMBER_FLOAT;
-                    }
-                    yylval.doubleVal = atof(yytext);
-                    return TOK_NUMBER_DOUBLE;
+                    if (yytext[strlen(yytext) - 1] == 'f') {  // Float literal
+        float value = strtof(yytext, NULL);   // Convert to float
+        if (value > FLT_MAX || value < -FLT_MAX) {
+            fprintf(stderr, "%d:%d Eroare lexica: Valoarea numerica %s depaseste limitele float!\n", lineNo, colNo, yytext);
+            exit(EXIT_FAILURE);  // Terminate the program on overflow
+        }
+        yylval.floatVal = atof(yytext);
+        return TOK_NUMBER_FLOAT;
+    } else {  // Double literal
+        double value = strtod(yytext, NULL);
+        if (isinf(value) || fabs(value) > DBL_MAX) {  // Check for infinity or exceeding range
+            fprintf(stderr, "%d:%d Eroare lexica: Valoarea numerica %s depaseste limitele double!\n", lineNo, colNo, yytext);
+            exit(EXIT_FAILURE);
+        }
+        yylval.doubleVal = value;
+        return TOK_NUMBER_DOUBLE;
+    }
                     }
 
 \"[^\"]*\"        {yylloc.first_line=lineNo;

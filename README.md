@@ -1,28 +1,53 @@
-# Limbaje-proiect
+# Programming Language Project: Interpreter Goals
 
--------------------------------------------------LEXER-----------------------------------------------------
-1. DECLARATIE DE VARIABILE PENTR TIPURI DE DATE: INT,DOUBLE,FLOAT
-
-2. OPERATII ARITMETICE: +,-,/,* + SA RESPECTE REGULILE DE CONVERSIE DIN C
-
-3. INSTRUCTIUNI DE CONTROL: IF,ELSE,WHILE + INSTRUCTIUNI CONDITIONALE SI BUCLE BAZATE PE CONDITII LOGICE SI COMPARATII
-
-4. INPUT SI OUPUT: PRINTF, SCANF + INTRODUCEREA DE VARIABILA SI AFISARE IN CONSOLA
-
-5. GESTIONAREA ERORILOR: IMPARTIREA LA ZERO SI DEPASIREA LIMITELOR TIPURILOR DE DATE + MESAJE DE EROARE ADECVATE
-
-6. BLOCURI DE COD: UTILIZAREA BLOCURILOR DE COD DELIMITATE DE ACOLADE + VARIABILE SA FIE ACCESIBILE DOAR IN ACEL SCOPE
-
--7. FUNCTII: POSIBILITATEA DE A FOLOSI FUNCTII SIMPLE, FARA SI CU PARAMETRI SI RETURNAREA DE VALORI DIN FUNCTII
-
-8. CONVERSII DE TIP: IMPLEMENTAREA CONVERSIILOR EXPLICITE INTRE INT, DOUBLE SI FLOAT
-
--9. COMENTARII: PERMITE UTIIZAREA COMENTARIILOR DE O LINIE SI PE MAI MULTE LINII
-
-10. INTERFATA UTILIZATOR:   INTERFATA SIMPLA DE LINIE DE COMANDA PENTRU INTERACTIUNEA CU INTERPRETORUL
-                            ASIGURA CA INTERPRETORUL POATE EXECUTA ATAT COMENZI INDIVIDUALE, CAT SI SCRIPUTIR DIN FISIERE
-                            EXEMPLU: ORI SCRIU INT X=5; SAU RUN SCRIPT.TXT
+This document outlines the requirements for a simple programming language interpreter, covering language features and execution environment.
 
 
+## Core Language Features
 
--------------------------------------------------PARSER--------------------------------------------------------
+1.  **Variable Declaration:**
+    * Support for declaring variables of the following data types: `int`, `double`, `float`.
+
+2.  **Arithmetic Operations:**
+    * Implementation of standard arithmetic operators: addition (`+`), subtraction (`-`), multiplication (`*`), division (`/`).
+    * Operations must respect C-style implicit type conversion and promotion rules.
+
+3.  **Control Flow Statements:**
+    * Implementation of `if` / `else` conditional statements.
+    * Conditional execution and loops must be based on logical (`&&`, `||`, `!`) and comparison (`<`, `>`, `==`, `!=`, etc.) operations.
+
+4.  **Input/Output:**
+    * Provide basic console input/output functionality, similar in concept to C's `printf` (for formatted output) and `scanf` (for formatted input).
+    * Allow reading values into variables and printing variable values or string literals to the console.
+
+5.  **Error Handling:**
+    * Implement runtime error detection and reporting for common issues:
+        * Division by zero.
+        * Potential data type overflows/underflows (if within project scope).
+    * Provide clear and adequate error messages.
+
+6.  **Code Blocks and Scoping:**
+    * Support for code blocks delimited by curly braces (`{ }`).
+    * Variables declared within a block must have local scope (only accessible within that block and its nested blocks).
+
+7.  **Explicit Type Casting:**
+    * Implement explicit type conversions (casting) between `int`, `double`, and `float` types (e.g., using syntax like `(int)my_float_var`).
+
+8.  **Comments:**
+    * Allow single-line comments (e.g., using `//`).
+    * Allow multi-line comments (e.g., using `/* ... */`).
+
+## Interpreter & Execution Features
+
+9. **User Interface:**
+    * Provides a simple Command-Line Interface (CLI) for interacting with the interpreter.
+    * Ensures the interpreter can execute:
+        * Individual commands entered interactively (e.g., `int x = 5;`).
+        * Scripts read from files (e.g., by issuing a command like `run script.txt`).
+
+## Implementation Phases Mentioned
+
+* **Lexer:** Responsible for breaking the source code into tokens.
+* **Parser:** Responsible for checking grammar
+
+---
